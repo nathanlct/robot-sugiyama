@@ -51,6 +51,7 @@ float get_headway() { return ultrasonic_3.distanceCm(); }
 
 /* sound module */
 MeBuzzer buzzer;
+// this function doesn't delay the execution
 void play_sound(int frequency, int time_ms) { buzzer.tone(frequency, time_ms); }
 
 /* leds */
@@ -64,7 +65,7 @@ void set_leds_color(int left_r, int left_g, int left_b, int right_r, int right_g
 }
 
 void set_leds_color(int r, int g, int b) { set_leds_color(r, g, b, r, g, b); }
-void clear_leds(int leds) { set_leds_color(#000, #000); }
+void clear_leds() { set_leds_color(#000, #000); }
 
 // elapsed time since board began to run current program
 unsigned long elapsed_millis() { return millis(); } // 50 days overflow
