@@ -51,7 +51,7 @@ float get_headway() { return ultrasonic_3.distanceCm(); }
 
 /* sound module */
 MeBuzzer buzzer;
-// this function doesn't delay the execution
+// this function pauses the executions for time_ms ms
 void play_sound(int frequency, int time_ms) { buzzer.tone(frequency, time_ms); }
 
 /* leds */
@@ -89,13 +89,14 @@ void _loop() {
 void setup() {
     clear_leds();
     stop();
-
-    // SETUP CODE HERE
 }
 
 // called at every step
 void loop() {
-    // LOOP CODE HERE
+    set_leds_color(#ff0000, #0000ff);
+    play_sound(200, 300);
+    set_leds_color(#0000ff, #ff0000);
+    play_sound(500, 300);
 
     _loop();
 }
