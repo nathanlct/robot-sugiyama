@@ -85,18 +85,87 @@ void _loop() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// between -100% and 100%
+float speed_left = 0.0f; 
+float speed_right = 0.0f; 
+
+float max_accel = 50.0f; // in %/s/s (not used for braking which is instant)
+
+unsigned long time = 0;
+
 // called when the board is set up
 void setup() {
     clear_leds();
     stop();
+
+    // init bots
+    play_sound(800, 200);
+    set_leds_color(#faf);
+
+    do {} while(get_light_value() > 300);
+    play_sound(500, 400);
+
+    sleep(700);
+    for(int i = 0; i < 3; ++i) {
+        set_leds_color(#fff);
+        sleep(100);
+        clear_leds();
+    }
+    sleep(1300);
+
+    do {} while(get_light_value() < 300);
+    play_sound(800, 200);
+
+    set_led_colors(#0f0);
+
+    time = elapsed_micros();
 }
 
 // called at every step
 void loop() {
-    set_leds_color(#ff0000, #0000ff);
-    play_sound(200, 300);
-    set_leds_color(#0000ff, #ff0000);
-    play_sound(500, 300);
+    float dt = float(elapsed_micros() - time) / 1e6; // s
+    time = elapsed_micros();
+
+    // compute new speeds
+
+    bool left_ok = is_left_black();
+    bool right_ok = is_right_black();
+
+    int dir = -1;
+
+    if(left_ok && right_ok) { dir = 0; set_led_colors(#0f0); }
+    else if(left_ok && !right_ok) { dir = 1; set_led_colors(#0f0, #f00); }
+    else if(!left_ok && right_ok) { dir = 2; set_led_colors(#f00, #0f0); }
+    else { dir = 3; set_led_colors(#f00); }
+
+    switch(dir) {
+        case 0: // all good, go forward (and lean left because ring)
+
+            break;
+        case 1: // correct by going left
+
+            break;
+        case 2: // correct by going right
+
+            break;
+        case 3: // correct by going backwards
+
+            break;
+        default:
+            break;
+    }
+
+    // adapt speeds given headway
+
+    if(dir != 3) {
+        float headway = get_headway();
+
+        
+    }
+
+    // update speeds
+
+    set_speed(speed_left, speed_right);
 
     _loop();
 }
