@@ -85,6 +85,13 @@ void _loop() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+float time_since_start = 0; // s
+float time_before_activation = 40; // after one minute, vehicle becomes rl and drives at slow constant speed
+float low_speed_factor = 0.7;
+float time_before_speedup = 70;
+float speedup_factor = 1; // vehicle will be at 80% of max speed after two minutes
+
+
 // between -100% and 100%
 float speed_left = 0.0f; 
 float speed_right = 0.0f; 
@@ -107,7 +114,6 @@ void setup() {
         clear_leds();
         sleep(1000);
     } while(get_light_value() > 300);
-    clear_leds();
 
     play_sound(500, 400);
 
@@ -145,6 +151,13 @@ void loop() {
     float dt = float(elapsed_micros() - time) / 1e6; // s
     time = elapsed_micros();
 
+    time_since_start += dt;
+
+    float speed_mult_rl = 1.0;
+    if(time_since_start <= time_before_activation) { speed_mult_rl = 1; set_leds_color(#00ff00); }
+    else if(time_since_start < time_before_speedup) { speed_mult_rl = low_speed_factor; set_leds_color(#ff0000); }
+    else { speed_mult_rl = speedup_factor; set_leds_color(#00ffff); }
+
     // compute new speeds
     float headway = get_headway();
 
@@ -176,11 +189,10 @@ void loop() {
         bool left_ok = is_left_black();
         bool right_ok = is_right_black();
 
-        set_leds_color(#00ff00);
-        if(left_ok && right_ok) { dir = 0; }// set_leds_color(#00ff00); }
-        else if(left_ok && !right_ok) { if(dir != 1) {red_right++;} dir = 1; }//set_leds_color(#00ff00, #ff0000);  }
-        else if(!left_ok && right_ok) { if(dir != 2) {red_left++;}dir = 2; }//set_leds_color(#ff0000, #00ff00); }
-        else { dir = 3; }//set_leds_color(#ff0000); }
+        if(left_ok && right_ok) { dir = 0; }
+        else if(left_ok && !right_ok) { if(dir != 1) {red_right++;} dir = 1; }
+        else if(!left_ok && right_ok) { if(dir != 2) {red_left++;}dir = 2; }
+        else { dir = 3; }
 
         switch(dir) {
             case 0: // all good, go forward (and lean left because ring)
@@ -208,8 +220,8 @@ void loop() {
         if(speed_left < -100) speed_left = -100;
         if(speed_right < -100) speed_right = -100;
 
-        speed_left *= speed_mult * start_speed_mult;
-        speed_right *= speed_mult * start_speed_mult;
+        speed_left *= speed_mult * start_speed_mult * speed_mult_rl;
+        speed_right *= speed_mult * start_speed_mult * speed_mult_rl;
     }
 
     if(speed_left < 20 && speed_right < 20)
