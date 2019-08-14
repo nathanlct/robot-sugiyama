@@ -86,9 +86,9 @@ void _loop() {
 ////////////////////////////////////////////////////////////////////////////////
 
 float time_since_start = 0; // s
-float time_before_activation = 40; // after one minute, vehicle becomes rl and drives at slow constant speed
-float low_speed_factor = 0.7;
-float time_before_speedup = 70;
+float time_before_activation = 30; // after one minute, vehicle becomes rl and drives at slow constant speed
+float low_speed_factor = 0.8;
+float time_before_speedup = 90;
 float speedup_factor = 1; // vehicle will be at 80% of max speed after two minutes
 
 
