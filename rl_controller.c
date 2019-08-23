@@ -249,11 +249,19 @@ void loop() {
         // get direction of vehicle depending on where it is on track
         bool left_ok = is_left_black();
         bool right_ok = is_right_black();
-
-        if(left_ok && right_ok) { dir = 0; }
-        else if(left_ok && !right_ok) { if(dir != 1) {red_right++;} dir = 1; }
-        else if(!left_ok && right_ok) { if(dir != 2) {red_left++;}dir = 2; }
-        else { dir = 3; }
+        
+        if(left_ok && right_ok)
+            dir = 0;
+        else if(left_ok && !right_ok) { 
+            if(dir != 1) red_right++;
+            dir = 1; 
+        }
+        else if(!left_ok && right_ok) {
+            if(dir != 2) red_left++;
+            dir = 2;
+        }
+        else 
+            dir = 3;
 
         // compute speed of both wheels depending on direction
         switch(dir) {
